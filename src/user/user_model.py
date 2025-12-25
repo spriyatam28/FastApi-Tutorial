@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy import Column, String, Integer, true
 from sqlalchemy.orm import relationship
 
-from src.storage.storage import Base
+from src.storage.database import Base
 
 class User(Base):
     __tablename__="users"

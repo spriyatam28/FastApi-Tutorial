@@ -1,15 +1,16 @@
 from sqlalchemy.orm import Session
 
-from src.task.task_model import Task
+from src.task.task_model import Task, TaskCreate
 
 
-async def create_task(db: Session, user_id: int, title: str):
-    task = Task(title=title, user_id=user_id)
-    db.add(task)
+def create_task(db: Session, user_id: int, task: TaskCreate):
+    new_task = Task(user_id=user_id, task_title=task.task_title, task_body=task.task_body)
+
+    db.add(new_task)
     db.commit()
-    db.refresh(task)
+    db.refresh(new_task)
 
-    return task
+    return new_task
 
 
 async def get_all_tasks(db: Session, user_id: int):
