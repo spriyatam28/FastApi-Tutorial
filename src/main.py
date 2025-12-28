@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from starlette.exceptions import HTTPException
 
 from src.storage.database import Base, engine, get_db
-from src.task.task_dao import create_task
-from src.task.task_model import TaskCreate, Task
+from src.task.task_dao import create_task, update_task
+from src.task.task_model import TaskCreate, Task, TaskUpdate
 from src.user.user_dao import create_new_user
 from src.user.user_model import User, UserCreate
 
@@ -39,6 +39,15 @@ async def add_task(user_id:int, task:TaskCreate, db: Session=Depends(get_db)):
         raise HTTPException(status_code=404, detail="User doesn't exist!!!")
 
     return create_task(db, user_id, task)
+
+@app.patch("/task/{user_id}/{task_id}")
+async def update_user_task(user_id:int, task_id:int, new_task:TaskUpdate, db:Session=Depends(get_db)):
+    updated_task=update_task(db, user_id, task_id, new_task)
+    if not updated_task:
+        raise HTTPException(status_code=404, detail="Task not found!!!")
+
+    return updated_task
+
 
 @app.post("/user")
 async def create_user(user:UserCreate, db: Session=Depends(get_db)):

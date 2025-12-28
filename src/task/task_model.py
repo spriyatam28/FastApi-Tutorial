@@ -1,3 +1,5 @@
+from datetime import date
+
 from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, func
 from sqlalchemy.orm import relationship
@@ -27,13 +29,11 @@ class TaskCreate(BaseModel):
     class Config:
         from_attributes=True
 
-# class TaskGetAll(BaseModel):
-#     user_id:int
-#     id:int
-#     task_title:str
-#     task_body: str
-#     completed: bool
-#     due_date:Date
-#
-#     class Config:
-#         from_attributes=True
+class TaskUpdate(BaseModel):
+    task_title: str
+    task_body: str
+    due_date: date
+    completed: bool = False
+
+    class Config:
+        from_attributes=True

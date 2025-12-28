@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from sqlalchemy import Column, String, Integer, true
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 
 from src.storage.database import Base
