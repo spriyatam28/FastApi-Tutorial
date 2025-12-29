@@ -13,6 +13,11 @@ class UserService:
 
         return UserResponse.model_validate(new_user)
 
+    async def get_user(self, user_id: int) -> UserResponse:
+        user = await self.repo.get_user_by_id(user_id)
+
+        return user
+
     async def get_all_users(self) -> list[UserResponse]:
         users = await self.repo.get_users()
 

@@ -23,7 +23,21 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("", response_model=list[UserResponse])
+@router.get("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    """
+    Get user by their id
+    :return: User details by their id
+    """
+    repo = UserRepository(db)
+    service = UserService(repo)
+
+    user = await service.get_user(user_id)
+
+    return user
+
+
+@router.get("", response_model=list[UserResponse], status_code=status.HTTP_200_OK)
 async def get_users(db: AsyncSession = Depends(get_db)):
     """Get all users"""
     repo = UserRepository(db)

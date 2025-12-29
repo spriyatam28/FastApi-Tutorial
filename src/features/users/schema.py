@@ -14,11 +14,14 @@ class UserCreate(BaseModel):
 
 
 class UserUpdate(BaseModel):
+    id: int
+    name: str
     email: EmailStr | None = None
 
 class UserResponse(BaseModel):
     id: int
     name: str
     email: EmailStr
+
     class Config:
         from_attributes = True
