@@ -1,10 +1,7 @@
-from datetime import date
-
-from pydantic import BaseModel
-from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, func
+from sqlalchemy import Column, Integer, ForeignKey, String, Boolean, Date, func
 from sqlalchemy.orm import relationship
 
-from src.storage.database import Base
+from src.database import Base
 
 
 class Task(Base):
@@ -20,20 +17,3 @@ class Task(Base):
     due_date=Column(Date, nullable=False, default=func.now())
 
     user=relationship("User", back_populates="tasks")
-
-
-class TaskCreate(BaseModel):
-    task_title:str
-    task_body: str | None=None
-
-    class Config:
-        from_attributes=True
-
-class TaskUpdate(BaseModel):
-    task_title: str
-    task_body: str
-    due_date: date
-    completed: bool = False
-
-    class Config:
-        from_attributes=True
