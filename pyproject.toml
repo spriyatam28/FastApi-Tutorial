@@ -9,12 +9,10 @@ dependencies = [
     "asyncpg>=0.31.0",
     "fastapi>=0.125.0",
     "greenlet>=3.3.0",
-    "psycopg2-binary>=2.9.11",
-    "pydantic>=2.12.5",
-    "ruff>=0.14.10",
+    "pydantic[email]>=2.12.5",
     "sqlalchemy>=2.0.45",
     "uvicorn>=0.38.0",
 ]
 
 [dependency-groups]
-dev=["fastapi[standard]", "pytest"]
+dev=["fastapi[standard]", "pytest", "ruff>=0.14.10"]

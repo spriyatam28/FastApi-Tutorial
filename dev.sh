@@ -2,11 +2,15 @@
 
 set -e
 
-echo "Installing all dependencies and synchronizing them..."
+# Environment variable for development
+
+export ENV="development"
+
+echo "🔃 Installing all dependencies and synchronizing them..."
 
 uv sync
 
-echo "😈 Starting ruff check on the current directory..."
+echo "✅ Starting ruff check on the current directory..."
 
 ruff check .
 

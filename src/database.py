@@ -3,8 +3,18 @@ from sqlalchemy.ext.declarative import declarative_base
 
 DATABASE_URL = "postgresql+asyncpg://spriyatam28:Siva.123@localhost:5432/tasks_db"
 
-engine = create_async_engine(DATABASE_URL)
-async_session = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
+engine = create_async_engine(
+    DATABASE_URL,
+    pool_size=10,
+    max_overflow=20,
+    pool_timeout=30
+)
+
+async_session = async_sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 
 Base = declarative_base()
 

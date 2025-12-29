@@ -1,9 +1,17 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
 from src.api.v1.api import api_router
 from src.database import Base, engine
+
+ENV = os.getenv("ENV", "development")
+
+docs_url = None if ENV == "production" else "/docs"
+redoc_url = None if ENV == "production" else "/redoc"
+openapi_url = None if ENV == "production" else "/openapi.json"
+
 
 @asynccontextmanager
 async def lifespan():
@@ -14,12 +22,16 @@ async def lifespan():
 
     await engine.dispose()
 
+
 app = FastAPI(
     title="FastAPI tutorial",
-    debug=True,
+    debug=None if ENV == "production" else True,
+    docs_url=docs_url,
+    redoc_url=redoc_url,
+    openapi_url=openapi_url,
     description="Learning how to build backend systems using FastAPI",
     version="0.1.0",
-    contact={
+    contact=None if ENV == "production" else {
         "author": "spriyatam28"
     }
 )
