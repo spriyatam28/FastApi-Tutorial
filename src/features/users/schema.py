@@ -18,7 +18,7 @@ class UserUpdate(BaseModel):
 
 class UserResponse(BaseModel):
     id: int
-    is_active: bool
-
+    name: str
+    email: EmailStr
     class Config:
         from_attributes = True

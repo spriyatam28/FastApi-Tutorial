@@ -1,10 +1,18 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
-from fastapi.params import Depends
-from sqlalchemy.orm import Session
-from starlette.exceptions import HTTPException
 
 from src.api.v1.api import api_router
-from src.database import Base, engine, get_db
+from src.database import Base, engine
+
+@asynccontextmanager
+async def lifespan():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    yield
+
+    await engine.dispose()
 
 app = FastAPI(
     title="FastAPI tutorial",
@@ -15,8 +23,6 @@ app = FastAPI(
         "author": "spriyatam28"
     }
 )
-
-Base.metadata.create_all(bind=engine)
 
 app.include_router(api_router, prefix="/api/v1")
 

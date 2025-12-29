@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from endpoints import tasks, users
+from src.api.v1.endpoints import tasks, users
 
 api_router = APIRouter()
 

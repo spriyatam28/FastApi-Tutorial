@@ -2,6 +2,10 @@
 
 set -e
 
+echo "Installing all dependencies and synchronizing them..."
+
+uv sync
+
 echo "😈 Starting ruff check on the current directory..."
 
 ruff check .

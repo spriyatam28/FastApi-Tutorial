@@ -1,8 +1,9 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from src.features.tasks.model import Task
-from src.features.tasks.schema import TaskUpdate, TaskCreate
+from src.features.tasks.schema import TaskCreate
+from src.features.users.model import User
 
 
 class TaskRepository:
@@ -10,7 +11,12 @@ class TaskRepository:
         self.db = db
 
     async def create(self, user_id: int, task: TaskCreate) -> Task:
-        """Create a task for a user"""
+        """
+        Create a task for a user
+        :param: user_id, task
+        :return: Task - A task
+        """
+
         new_task = Task(user_id=user_id, **task.model_dump())
 
         self.db.add(new_task)
@@ -20,5 +26,14 @@ class TaskRepository:
         return new_task
 
 
-def get_all_tasks(db: Session, user_id: int):
-    return db.query(Task).filter(user_id == Task.user_id).all()
+    async def get_all_tasks(self, user_id: int)-> list[Task]:
+        """
+        TODO: Implement the method to return all tasks of an user
+        :param user_id:
+        :return: list[Task] - A list of tasks
+        """
+
+        tasks = await self.db.execute(select(Task).where(User.id==user_id))
+
+        return list(tasks.scalars().unique().all())
+

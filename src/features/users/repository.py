@@ -1,5 +1,3 @@
-from typing import Any, Sequence
-
 from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
