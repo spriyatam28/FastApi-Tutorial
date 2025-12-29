@@ -32,7 +32,12 @@ app = FastAPI(
     description="Learning how to build backend systems using FastAPI",
     version="0.1.0",
     contact=None if ENV == "production" else {
-        "author": "spriyatam28"
+        "name": "spriyatam28",
+        "url": "https://github.com/spriyatam28"
+    },
+    license_info={
+        "name": "GPL v3",
+        "url": "https://github.com/spriyatam28/FastApi-Tutorial/blob/main/LICENSE"
     }
 )
 

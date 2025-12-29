@@ -18,6 +18,7 @@ class UserUpdate(BaseModel):
     name: str
     email: EmailStr | None = None
 
+
 class UserResponse(BaseModel):
     id: int
     name: str

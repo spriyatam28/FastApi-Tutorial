@@ -12,8 +12,6 @@ class TaskService:
         :param user_id:
         :return: list[Task] - All tasks of a user
         """
-
         tasks = await self.repo.get_all_tasks(user_id)
 
         return tasks
-

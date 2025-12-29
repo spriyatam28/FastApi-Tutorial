@@ -20,7 +20,7 @@ class UserRepository:
         new_user = User(**user.model_dump())
 
         if new_user.email:
-            result = await self.db.execute(select(User).where(User.email==user.email))
+            result = await self.db.execute(select(User).where(User.email == user.email))
 
             if result.scalar_one_or_none():
                 raise HTTPException(

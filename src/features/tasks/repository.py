@@ -32,8 +32,6 @@ class TaskRepository:
         :param user_id:
         :return: list[Task] - A list of tasks
         """
-
         tasks = await self.db.execute(select(Task).where(User.id==user_id))
 
         return list(tasks.scalars().unique().all())
-
