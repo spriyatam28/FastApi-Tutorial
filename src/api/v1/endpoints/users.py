@@ -66,8 +66,8 @@ async def update_user_details(user: UserUpdate, db: AsyncSession = Depends(get_d
 async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     """
     Delete the user by their id
-    :param user_id:
-    :param db:
+    :param user_id: User id
+    :param db: Database
     :return: Returns the deleted user details
     """
     repo=UserRepository(db)
