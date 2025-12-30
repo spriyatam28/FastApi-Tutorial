@@ -1,5 +1,5 @@
 from .repository import UserRepository
-from .schema import UserCreate, UserResponse
+from .schema import UserCreate, UserResponse, UserUpdate
 
 
 class UserService:
@@ -21,3 +21,13 @@ class UserService:
         users = await self.repo.get_users()
 
         return users
+
+    async def update_user(self, user: UserUpdate) -> UserResponse:
+        db_user = await self.repo.update(user)
+
+        return db_user
+
+    async def delete_user(self, user_id: int) -> UserResponse:
+        deleted_user = await self.repo.delete(user_id)
+
+        return deleted_user

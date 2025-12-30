@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_db
 from src.features.users.repository import UserRepository
-from src.features.users.schema import UserResponse, UserCreate
+from src.features.users.schema import UserResponse, UserCreate, UserUpdate
 from src.features.users.service import UserService
 
 router = APIRouter()
@@ -46,3 +46,33 @@ async def get_users(db: AsyncSession = Depends(get_db)):
     users = await service.get_all_users()
 
     return users
+
+@router.patch("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def update_user_details(user: UserUpdate, db: AsyncSession = Depends(get_db)):
+    """
+    Updates user details, if email doesn't exist
+    :param user: User details
+    :param db: Database
+    :return: Returns updated user details
+    """
+    repo = UserRepository(db)
+    service = UserService(repo)
+
+    updated_user = await service.update_user(user)
+
+    return updated_user
+
+@router.delete("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    """
+    Delete the user by their id
+    :param user_id:
+    :param db:
+    :return: Returns the deleted user details
+    """
+    repo=UserRepository(db)
+    service=UserService(repo)
+
+    deleted_user = await service.delete_user(user_id)
+
+    return deleted_user

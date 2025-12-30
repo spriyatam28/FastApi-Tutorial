@@ -1,5 +1,5 @@
 from pydantic import EmailStr
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
@@ -92,6 +92,19 @@ class UserRepository:
         Returns a list of all users' details
         :return: All users' details
         """
-        users = await self.db.execute(select(User))
+        users = await self.db.execute(select(User).limit(10).offset(0))
 
         return list(users.scalars().unique().all())
+
+    async def delete(self, user_id: int)-> User | None:
+        """
+        Delete a user by their id
+        :param user_id:
+        :return:
+        """
+        # TODO: Use Alembic for migration
+        db_user = await self.db.execute(delete(User).where(User.id==user_id).returning(User))
+
+        await self.db.commit()
+
+        return db_user.scalar_one_or_none()

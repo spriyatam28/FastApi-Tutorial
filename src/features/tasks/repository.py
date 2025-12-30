@@ -16,7 +16,6 @@ class TaskRepository:
         :param: user_id, task
         :return: Task - A task
         """
-
         new_task = Task(user_id=user_id, **task.model_dump())
 
         self.db.add(new_task)
@@ -25,13 +24,12 @@ class TaskRepository:
 
         return new_task
 
-
-    async def get_all_tasks(self, user_id: int)-> list[Task]:
+    async def get_all_tasks(self, user_id: int) -> list[Task]:
         """
-        TODO: Implement the method to return all tasks of an user
+        Get all the tasks of a user
         :param user_id:
         :return: list[Task] - A list of tasks
         """
-        tasks = await self.db.execute(select(Task).where(User.id==user_id))
+        tasks = await self.db.execute(select(Task).where(User.id == user_id))
 
         return list(tasks.scalars().unique().all())
