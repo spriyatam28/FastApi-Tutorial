@@ -49,4 +49,4 @@ app.add_exception_handler(AppException, app_exception_handler)
 
 @app.get("/")
 async def root():
-    return "Hello, World!!!"
+    return {"message": "Hello, World!!!"}

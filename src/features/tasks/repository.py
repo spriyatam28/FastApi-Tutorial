@@ -5,7 +5,6 @@ from fastapi import HTTPException
 
 from src.features.tasks.model import Task
 from src.features.tasks.schema import TaskCreate, TaskUpdate, TaskResponse
-from src.features.users.model import User
 
 
 class TaskRepository:

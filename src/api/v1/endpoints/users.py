@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_db
@@ -15,12 +15,9 @@ async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
     repo = UserRepository(db)
     service = UserService(repo)
 
-    try:
-        new_user = await service.create_user(user)
+    new_user = await service.create_user(user)
 
-        return new_user
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    return new_user
 
 
 @router.get("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
@@ -47,6 +44,7 @@ async def get_users(db: AsyncSession = Depends(get_db)):
 
     return users
 
+
 @router.patch("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def update_user_details(user: UserUpdate, db: AsyncSession = Depends(get_db)):
     """
@@ -62,6 +60,7 @@ async def update_user_details(user: UserUpdate, db: AsyncSession = Depends(get_d
 
     return updated_user
 
+
 @router.delete("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
 async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     """
@@ -70,8 +69,8 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     :param db: Database
     :return: Returns the deleted user details
     """
-    repo=UserRepository(db)
-    service=UserService(repo)
+    repo = UserRepository(db)
+    service = UserService(repo)
 
     deleted_user = await service.delete_user(user_id)
 
