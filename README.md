@@ -13,11 +13,11 @@ This project is for learning about building backend system using FastAPI.
   - [x] Update user
   - [ ] Delete a user
 - Tasks
-  - [ ] Create a task
-  - [ ] Update a task
+  - [x] Create a task
   - [x] Get all the tasks of an `user`
-  - [ ] Get a task by its `id`
-  - [ ] Delete a task
+  - [x] Get a task by its `id`
+  - [x] Update a task by its `id`
+  - [x] Delete a task by its `id`
 
 ---
 

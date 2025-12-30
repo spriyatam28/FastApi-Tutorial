@@ -20,7 +20,10 @@ async def get_tasks(user_id: int, db: AsyncSession = Depends(get_db)):
     task_repo = TaskRepository(db)
     service = TaskService(task_repo)
 
-    return await service.get_all_tasks(user_id)
+    tasks = await service.get_all_tasks(user_id)
+
+    return tasks
+
 
 @router.get("/{user_id}/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 async def get_task_by_id(user_id: int, task_id: int, db: AsyncSession = Depends(get_db)):
@@ -31,7 +34,13 @@ async def get_task_by_id(user_id: int, task_id: int, db: AsyncSession = Depends(
     :param db: Database
     :return: Task details
     """
-    pass
+    repo = TaskRepository(db)
+    service = TaskService(repo)
+
+    task = await service.get_task_by_id(user_id, task_id)
+
+    return task
+
 
 @router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate, db: AsyncSession = Depends(get_db)):
@@ -41,7 +50,13 @@ async def create_task(task: TaskCreate, db: AsyncSession = Depends(get_db)):
     :param db: Database
     :return: Task details
     """
-    pass
+    repo = TaskRepository(db)
+    service = TaskService(repo)
+
+    new_task = await service.create_task(task)
+
+    return new_task
+
 
 @router.patch("", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 async def update_task(task: TaskUpdate, db: AsyncSession = Depends(get_db)):
@@ -51,5 +66,26 @@ async def update_task(task: TaskUpdate, db: AsyncSession = Depends(get_db)):
     :param db: Database
     :return: Updated task details
     """
-    pass
+    repo = TaskRepository(db)
+    service = TaskService(repo)
 
+    updated_task = await service.update_task(task)
+
+    return updated_task
+
+
+@router.delete("/{user_id}/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+async def delete_task(user_id: int, task_id: int, db: AsyncSession = Depends(get_db)):
+    """
+    Returns deleted task details of a user by its id
+    :param user_id: User id
+    :param task_id: Task id
+    :param db: Database
+    :return: Deleted task details
+    """
+    repo = TaskRepository(db)
+    service = TaskService(repo)
+
+    deleted_task = await service.delete_task(user_id, task_id)
+
+    return deleted_task

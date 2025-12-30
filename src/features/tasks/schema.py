@@ -4,14 +4,20 @@ from pydantic import BaseModel
 
 
 class TaskCreate(BaseModel):
+    id: int
+    user_id: int
     task_title: str
     task_body: str | None = None
+    due_date: date
+    completed: bool = False
 
     class Config:
         from_attributes = True
 
 
 class TaskUpdate(BaseModel):
+    user_id: int
+    id: int
     task_title: str
     task_body: str
     due_date: date

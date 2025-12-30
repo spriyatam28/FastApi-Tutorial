@@ -122,6 +122,10 @@ class UserRepository:
         if not user:
             raise UserNotFoundException()
 
-        await self.db.commit()
+        try:
+            await self.db.commit()
 
-        return user
+            return user
+        except IntegrityError:
+            await self.db.rollback()
+            raise UserNotFoundException()
