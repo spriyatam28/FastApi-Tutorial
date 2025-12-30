@@ -9,8 +9,8 @@ This project is for learning about building backend system using FastAPI.
 - Users
   - [x] Create a user
   - [x] Get a user by their `id`
-  - [x] Get all users
-  - [ ] Update user
+  - [x] Get all users `limit=10` and `offset=0`
+  - [x] Update user
   - [ ] Delete a user
 - Tasks
   - [ ] Create a task
