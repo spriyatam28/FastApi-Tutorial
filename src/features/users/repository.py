@@ -1,8 +1,9 @@
 from pydantic import EmailStr
 from sqlalchemy import select, delete
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import HTTPException
 
+from .exception import UserNotFoundException, EmailNotFoundException, DuplicateEmailException
 from .model import User
 from .schema import UserCreate, UserUpdate
 
@@ -17,22 +18,23 @@ class UserRepository:
         :param user: Takes the user details
         :return: New user details
         """
+        result = await self.db.execute(select(User).where(User.email == user.email))
+
+        if result.scalar_one_or_none():
+            raise DuplicateEmailException()
+
         new_user = User(**user.model_dump())
 
-        if new_user.email:
-            result = await self.db.execute(select(User).where(User.email == user.email))
-
-            if result.scalar_one_or_none():
-                raise HTTPException(
-                    status_code=400,
-                    detail="Email already in use. Try with a different one"
-                )
-
         self.db.add(new_user)
-        await self.db.commit()
-        await self.db.refresh(new_user)
 
-        return new_user
+        try:
+            await self.db.commit()
+            await self.db.refresh(new_user)
+
+            return new_user
+        except IntegrityError:
+            await self.db.rollback()
+            raise DuplicateEmailException()
 
     async def update(self, user: UserUpdate) -> User | None:
         """
@@ -43,7 +45,7 @@ class UserRepository:
         db_user = await self.get_user_by_id(user.id)
 
         if not db_user:
-            return None
+            raise UserNotFoundException()
 
         # Check if the new email already exists in db
         if user.email and user.email != db_user.email:
@@ -51,19 +53,20 @@ class UserRepository:
             existing_user = result.scalar_one_or_none()
 
             if existing_user:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Email already in use. Try with a different one"
-                )
+                raise DuplicateEmailException()
 
         # If email does not exist, apply the update
         for field, value in user.model_dump(exclude_unset=True).items():
             setattr(db_user, field, value)
 
-        await self.db.commit()
-        await self.db.refresh(db_user)
+        try:
+            await self.db.commit()
+            await self.db.refresh(db_user)
 
-        return db_user
+            return db_user
+        except IntegrityError:
+            await self.db.rollback()
+            raise DuplicateEmailException()
 
     async def get_user_by_email(self, email: EmailStr) -> User | None:
         """
@@ -74,8 +77,12 @@ class UserRepository:
         result = await self.db.execute(
             select(User).where(User.email == email)
         )
+        user = result.scalar_one_or_none()
 
-        return result.scalar_one_or_none()
+        if not user:
+            raise EmailNotFoundException()
+
+        return user
 
     async def get_user_by_id(self, user_id: int) -> User | None:
         """
@@ -83,9 +90,13 @@ class UserRepository:
         :param user_id: user id
         :return: user details
         """
-        db_user = await self.db.execute(select(User).where(User.id == user_id))
+        result = await self.db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
 
-        return db_user.scalar_one_or_none()
+        if not user:
+            raise UserNotFoundException()
+
+        return user
 
     async def get_users(self) -> list[User]:
         """
@@ -94,17 +105,23 @@ class UserRepository:
         """
         users = await self.db.execute(select(User).limit(10).offset(0))
 
-        return list(users.scalars().unique().all())
+        return list(users.scalars().all())
 
-    async def delete(self, user_id: int)-> User | None:
+    async def delete(self, user_id: int) -> User | None:
         """
         Delete a user by their id
         :param user_id:
         :return:
         """
         # TODO: Use Alembic for migration
-        db_user = await self.db.execute(delete(User).where(User.id==user_id).returning(User))
+        result = await self.db.execute(
+            delete(User).where(User.id == user_id).returning(User)
+        )
+        user = result.scalar_one_or_none()
+
+        if not user:
+            raise UserNotFoundException()
 
         await self.db.commit()
 
-        return db_user.scalar_one_or_none()
+        return user

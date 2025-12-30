@@ -4,6 +4,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from src.api.v1.api import api_router
+from src.core.exception_handlers import app_exception_handler
+from src.core.exceptions import AppException
 from src.database import Base, engine
 
 ENV = os.getenv("ENV", "development")
@@ -33,7 +35,7 @@ app = FastAPI(
     version="0.1.0",
     contact=None if ENV == "production" else {
         "name": "spriyatam28",
-        "url": "https://github.com/spriyatam28"
+        "url": "https://github.com/spriyatam28/FastApi-Tutorial"
     },
     license_info={
         "name": "GPL v3",
@@ -42,6 +44,7 @@ app = FastAPI(
 )
 
 app.include_router(api_router, prefix="/api/v1")
+app.add_exception_handler(AppException, app_exception_handler)
 
 
 @app.get("/")
