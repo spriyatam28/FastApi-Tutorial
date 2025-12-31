@@ -7,71 +7,71 @@ from src.features.users.schema import UserResponse, UserCreate, UserUpdate
 from src.features.users.service import UserService
 
 router = APIRouter()
-
+DB_SESSION = Depends(get_db)
 
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    """Create a new user"""
-    repo = UserRepository(db)
-    service = UserService(repo)
+async def create_user(user: UserCreate, db: AsyncSession = DB_SESSION):
+	"""Create a new user"""
+	repo = UserRepository(db)
+	service = UserService(repo)
 
-    new_user = await service.create_user(user)
+	new_user = await service.create_user(user)
 
-    return new_user
+	return new_user
 
 
 @router.get("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
-async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    """
-    Get user by their id
-    :return: User details by their id
-    """
-    repo = UserRepository(db)
-    service = UserService(repo)
+async def get_user(user_id: int, db: AsyncSession = DB_SESSION):
+	"""
+	Get user by their id
+	:return: User details by their id
+	"""
+	repo = UserRepository(db)
+	service = UserService(repo)
 
-    user = await service.get_user(user_id)
+	user = await service.get_user(user_id)
 
-    return user
+	return user
 
 
 @router.get("", response_model=list[UserResponse], status_code=status.HTTP_200_OK)
-async def get_users(db: AsyncSession = Depends(get_db)):
-    """Get all users"""
-    repo = UserRepository(db)
-    service = UserService(repo)
+async def get_users(db: AsyncSession = DB_SESSION):
+	"""Get all users"""
+	repo = UserRepository(db)
+	service = UserService(repo)
 
-    users = await service.get_all_users()
+	users = await service.get_all_users()
 
-    return users
+	return users
 
 
 @router.patch("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-async def update_user_details(user: UserUpdate, db: AsyncSession = Depends(get_db)):
-    """
-    Updates user details, if email doesn't exist
-    :param user: User details
-    :param db: Database
-    :return: Returns updated user details
-    """
-    repo = UserRepository(db)
-    service = UserService(repo)
+async def update_user_details(user: UserUpdate, db: AsyncSession = DB_SESSION):
+	"""
+	Updates user details, if email doesn't exist
+	:param user: User details
+	:param db: Database
+	:return: Returns updated user details
+	"""
+	repo = UserRepository(db)
+	service = UserService(repo)
 
-    updated_user = await service.update_user(user)
+	updated_user = await service.update_user(user)
 
-    return updated_user
+	return updated_user
 
 
 @router.delete("/{user_id}", response_model=UserResponse, status_code=status.HTTP_200_OK)
-async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
-    """
-    Delete the user by their id
-    :param user_id: User id
-    :param db: Database
-    :return: Returns the deleted user details
-    """
-    repo = UserRepository(db)
-    service = UserService(repo)
+async def delete_user(user_id: int, db: AsyncSession = DB_SESSION):
+	"""
+	Delete the user by their id
+	:param user_id: User id
+	:param db: Database
+	:return: Returns the deleted user details
+	"""
+	repo = UserRepository(db)
+	service = UserService(repo)
 
-    deleted_user = await service.delete_user(user_id)
+	deleted_user = await service.delete_user(user_id)
 
-    return deleted_user
+	return deleted_user

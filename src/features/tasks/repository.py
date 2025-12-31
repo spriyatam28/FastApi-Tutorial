@@ -3,112 +3,111 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
+from src.features.tasks.exception import TaskNotFoundException
 from src.features.tasks.model import Task
 from src.features.tasks.schema import TaskCreate, TaskUpdate, TaskResponse
+from src.features.users.exception import UserNotFoundException
+from src.features.users.model import User
 
 
 class TaskRepository:
-    def __init__(self, db: AsyncSession):
-        self.db = db
+	def __init__(self, db: AsyncSession):
+		self.db = db
 
-    async def create(self, task: TaskCreate) -> TaskResponse:
-        """
-        Create a task for a user
-        :param: user_id, task
-        :return: Task - A task
-        """
-        new_task = Task(**task.model_dump())
+	async def create(self, task: TaskCreate) -> TaskResponse:
+		"""
+		Create a task for a user
+		:param: user_id, task
+		:return: Task - A task
+		"""
+		db_user = await self.db.execute(select(User).where(User.id == task.user_id))
 
-        self.db.add(new_task)
-        await self.db.commit()
-        await self.db.refresh(new_task)
+		if db_user.scalar_one_or_none():
+			raise UserNotFoundException()
 
-        return new_task
+		try:
+			new_task = Task(**task.model_dump())
 
-    async def all_tasks(self, user_id: int) -> list[Task]:
-        """
-        Get all the tasks of a user
-        :param user_id:
-        :return: list[Task] - A list of tasks
-        """
-        tasks = await self.db.execute(select(Task).where(Task.user_id == user_id))
+			self.db.add(new_task)
+			await self.db.commit()
+			await self.db.refresh(new_task)
 
-        return list(tasks.scalars().unique().all())
+			return new_task
+		except IntegrityError as err:
+			raise AttributeError() from err
 
-    async def task_by_id(self, user_id: int, task_id: int) -> TaskResponse:
-        """
-        Get task by its id of a user
-        :param user_id: user id
-        :param task_id: task id
-        :return: Task details
-        """
-        result = await self.db.execute(
-            select(Task).where(Task.user_id == user_id, Task.id == task_id)
-        )
+	async def all_tasks(self, user_id: int) -> list[Task]:
+		"""
+		Get all the tasks of a user
+		:param user_id:
+		:return: list[Task] - A list of tasks
+		"""
+		tasks = await self.db.execute(select(Task).where(Task.user_id == user_id))
 
-        task = result.scalar_one_or_none()
+		if not tasks:
+			raise UserNotFoundException()
 
-        if not task:
-            raise HTTPException(
-                status_code=404,
-                detail="Either user or task not found!"
-            )
+		return list(tasks.scalars().unique().all())
 
-        return task
+	async def task_by_id(self, user_id: int, task_id: int) -> TaskResponse:
+		"""
+		Get task by its id of a user
+		:param user_id: user id
+		:param task_id: task id
+		:return: Task details
+		"""
+		result = await self.db.execute(
+			select(Task).where(Task.user_id == user_id, Task.id == task_id)
+		)
 
-    async def update(self, task: TaskUpdate) -> TaskResponse:
-        """
+		task = result.scalar_one_or_none()
 
-        :param task:
-        :return:
-        """
-        result = await self.db.execute(
-            select(Task).where(Task.user_id == task.user_id, Task.id == task.id)
-        )
+		if not task:
+			raise TaskNotFoundException()
 
-        db_task = result.scalar_one_or_none()
+		return task
 
-        if not task:
-            raise HTTPException(
-                status_code=404,
-                detail="Either user or task not found!"
-            )
+	async def update(self, task: TaskUpdate) -> TaskResponse:
+		"""
 
-        for field, value in task.model_dump(exclude_unset=True).items():
-            setattr(db_task, field, value)
+		:param task:
+		:return:
+		"""
+		result = await self.db.execute(
+			select(Task).where(Task.user_id == task.user_id, Task.id == task.id)
+		)
 
-        try:
-            await self.db.commit()
-            await self.db.refresh(db_task)
+		db_task = result.scalar_one_or_none()
 
-            return db_task
-        except IntegrityError:
-            await self.db.rollback()
-            raise HTTPException(
-                status_code=404,
-                detail="Either user or task not found!"
-            )
+		if not task:
+			raise HTTPException(status_code=404, detail="Either user or task not found!")
 
-    async def delete(self, user_id: int, task_id: int) -> TaskResponse:
-        result = await self.db.execute(
-            delete(Task).where(Task.user_id == user_id, Task.id == task_id).returning(Task)
-        )
+		for field, value in task.model_dump(exclude_unset=True).items():
+			setattr(db_task, field, value)
 
-        deleted_task = result.scalar_one_or_none()
+		try:
+			await self.db.commit()
+			await self.db.refresh(db_task)
 
-        if not deleted_task:
-            raise HTTPException(
-                status_code=404,
-                detail="Either user or task not found!"
-            )
+			return db_task
+		except IntegrityError as err:
+			await self.db.rollback()
+			raise TaskNotFoundException() from err
 
-        try:
-            await self.db.commit()
+	async def delete(self, user_id: int, task_id: int) -> TaskResponse:
+		result = await self.db.execute(
+			delete(Task).where(Task.user_id == user_id, Task.id == task_id).returning(Task)
+		)
 
-            return deleted_task
-        except IntegrityError:
-            await self.db.rollback()
-            raise HTTPException(
-                status_code=404,
-                detail="Either user or task not found!"
-            )
+		deleted_task = result.scalar_one_or_none()
+
+		if not deleted_task:
+			raise TaskNotFoundException()
+
+		try:
+			await self.db.commit()
+
+			return deleted_task
+		except IntegrityError as err:
+			await self.db.rollback()
+			raise TaskNotFoundException() from err

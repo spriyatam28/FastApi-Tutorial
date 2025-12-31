@@ -9,7 +9,6 @@ dependencies = [
     "asyncpg>=0.31.0",
     "fastapi>=0.125.0",
     "greenlet>=3.3.0",
-    "pre-commit>=4.5.1",
     "pydantic[email]>=2.12.5",
     "sqlalchemy>=2.0.45",
     "uvicorn>=0.38.0",
