@@ -18,6 +18,7 @@ This project is for learning about building backend system using FastAPI.
   - [x] Get task by its `id`
   - [x] Update a task by its `id`
   - [x] Delete a task by its `id`
+  - [x] Delete all `tasks` of a user
 
 ---
 
