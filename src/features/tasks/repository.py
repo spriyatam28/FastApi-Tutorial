@@ -2,7 +2,9 @@ from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
+from starlette.responses import JSONResponse
 
+from src.core.response import BaseResponse
 from src.features.tasks.exception import TaskNotFoundException
 from src.features.tasks.model import Task
 from src.features.tasks.schema import TaskCreate, TaskUpdate, TaskResponse
@@ -111,3 +113,22 @@ class TaskRepository:
 		except IntegrityError as err:
 			await self.db.rollback()
 			raise TaskNotFoundException() from err
+
+	async def delete_all(self, user_id: int) -> JSONResponse:
+		result = await self.db.execute(select(Task).where(Task.user_id == user_id))
+
+		db_user = result.scalar_one_or_none()
+
+		if not db_user:
+			raise UserNotFoundException()
+
+		try:
+			await self.db.execute(delete(Task).where(Task.user_id == user_id))
+
+			await self.db.commit()
+
+			return BaseResponse.response(True)
+		except IntegrityError as err:
+			await self.db.rollback()
+
+			raise AttributeError() from err

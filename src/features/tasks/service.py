@@ -52,3 +52,8 @@ class TaskService:
 		deleted_task = await self.repo.delete(user_id, task_id)
 
 		return deleted_task
+
+	async def delete_all_tasks(self, user_id: int) -> TaskResponse:
+		deleted_tasks = await self.repo.delete_all(user_id)
+
+		return deleted_tasks

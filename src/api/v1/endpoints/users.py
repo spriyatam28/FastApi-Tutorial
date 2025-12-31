@@ -9,6 +9,7 @@ from src.features.users.service import UserService
 router = APIRouter()
 DB_SESSION = Depends(get_db)
 
+
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 async def create_user(user: UserCreate, db: AsyncSession = DB_SESSION):
 	"""Create a new user"""
