@@ -20,14 +20,14 @@ class UserRepository:
 		"""
 		result = await self.db.execute(select(User).where(User.email == user.email))
 
+		# If email already exists in db, throw an exception
 		if result.scalar_one_or_none():
 			raise DuplicateEmailException()
 
 		new_user = User(**user.model_dump())
 
-		self.db.add(new_user)
-
 		try:
+			self.db.add(new_user)
 			await self.db.commit()
 			await self.db.refresh(new_user)
 
@@ -50,9 +50,9 @@ class UserRepository:
 		# Check if the new email already exists in db
 		if user.email and user.email != db_user.email:
 			result = await self.db.execute(select(User).where(User.email == user.email))
-			existing_user = result.scalar_one_or_none()
+			existing_email = result.scalar_one_or_none()
 
-			if existing_user:
+			if existing_email:
 				raise DuplicateEmailException()
 
 		# If email does not exist, apply the update

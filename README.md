@@ -11,7 +11,7 @@ This project is for learning about building backend system using FastAPI.
   - [x] Get a user by their `id`
   - [x] Get all users `limit=10` and `offset=0`
   - [x] Update user
-  - [ ] Delete a user
+  - [x] Delete a `user`, ***corresponding*** `tasks` shall be *deleted* too
 - ### Tasks
   - [x] Create a task
   - [x] Get all tasks of an `user`
@@ -24,7 +24,6 @@ This project is for learning about building backend system using FastAPI.
 
 ## Todos:
 
-- [ ] When a `user` is deleted, ***corresponding*** `tasks` shall be *deleted* too
 - [ ] Pagination
 - [ ] Unit testing - Pytest
 - [ ] Authentication and Authorization

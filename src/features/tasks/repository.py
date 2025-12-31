@@ -24,7 +24,7 @@ class TaskRepository:
 		"""
 		db_user = await self.db.execute(select(User).where(User.id == task.user_id))
 
-		if db_user.scalar_one_or_none():
+		if not db_user.scalar_one_or_none():
 			raise UserNotFoundException()
 
 		try:
@@ -44,10 +44,14 @@ class TaskRepository:
 		:param user_id:
 		:return: list[Task] - A list of tasks
 		"""
-		tasks = await self.db.execute(select(Task).where(Task.user_id == user_id))
+		db_user = await self.db.execute(select(User).where(User.id == user_id))
 
-		if not tasks:
+		if not db_user.scalar_one_or_none():
 			raise UserNotFoundException()
+
+		tasks = await self.db.execute(
+			select(Task).where(Task.user_id == user_id).limit(10).offset(0)
+		)
 
 		return list(tasks.scalars().unique().all())
 
