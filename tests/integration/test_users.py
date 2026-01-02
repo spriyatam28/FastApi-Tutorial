@@ -9,9 +9,24 @@ BASE_URL = "/users"
 
 @pytest.mark.asyncio
 async def test_get_all_users(test_client: AsyncClient):
+    payload = {"name": "Test User", "email": "test.user@example.com"}
+    create_res = await test_client.post(f"{ROUTE_PREFIX}{BASE_URL}", json=payload)
+
+    assert create_res.status_code == status.HTTP_201_CREATED
+
+    create_data = create_res.json()
+
     response = await test_client.get(f"{ROUTE_PREFIX + BASE_URL}")
 
     assert response.status_code == status.HTTP_200_OK
+
+    users = response.json()
+    user = users[0]
+
+    assert "id" in user
+    assert user["id"] == create_data["id"]
+    assert user["name"] == payload["name"]
+    assert user["email"] == payload["email"]
 
 
 @pytest.mark.asyncio
@@ -104,3 +119,29 @@ async def test_update_user(test_client: AsyncClient):
     assert updated_data3["id"] == create_data["id"]
     assert updated_data3["email"] == update_payload3["email"]
     assert updated_data3["name"] == updated_data2["name"]
+
+
+@pytest.mark.asyncio
+async def test_delete_user(test_client: AsyncClient):
+    user_payload = {"name": "Test User", "email": "test.user@example.com"}
+
+    created_response = await test_client.post(f"{ROUTE_PREFIX + BASE_URL}", json=user_payload)
+
+    assert created_response.status_code == status.HTTP_201_CREATED
+
+    create_data = created_response.json()
+
+    assert "id" in create_data
+    assert create_data["name"] == user_payload["name"]
+    assert create_data["email"] == user_payload["email"]
+
+    deleted_response = await test_client.delete(f"{ROUTE_PREFIX + BASE_URL}/{create_data['id']}")
+
+    assert deleted_response.status_code == status.HTTP_200_OK
+
+    data = deleted_response.json()
+
+    assert "id" in data
+    assert data["id"] == create_data["id"]
+    assert data["name"] == create_data["name"]
+    assert data["email"] == create_data["email"]
