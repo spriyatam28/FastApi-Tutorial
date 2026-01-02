@@ -33,6 +33,8 @@ This project is for learning about building backend system using FastAPI.
 - [x] Test Coverage
 - [ ] Unit testing
 - [x] Integration testing 
+  - [x] Users
+  - [ ] Tasks
 - [ ] E2E testing
 - [ ] Authentication and Authorization
 - [ ] Email verification

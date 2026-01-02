@@ -1,0 +1,35 @@
+name: Deploy FastAPI to EC2
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Rsync to EC2
+        run: |
+          rsync -av \
+            --exclude tests \
+            --exclude README.md \
+            --exclude .git \
+            src alembic alembic.ini pyproject.toml uv.lock scripts \
+            ec2-user@${{ secrets.EC2_IP }}:/app
+
+      - name: Restart App
+        run: |
+          ssh ec2-user@${{ secrets.EC2_IP }} << 'EOF'
+            cd /app
+            uv sync --no-dev
+            sudo systemctl restart fastapi
+          EOF

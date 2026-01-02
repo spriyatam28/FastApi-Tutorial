@@ -5,6 +5,7 @@ from pydantic import BaseModel, ConfigDict
 
 class TaskBase(BaseModel):
 	"""Base task model with common fields"""
+
 	model_config = ConfigDict(from_attributes=True)
 
 	task_title: str
@@ -15,6 +16,7 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
 	"""Model for creating a new task"""
+
 	user_id: int
 
 

@@ -7,13 +7,18 @@ source .venv/bin/activate
 
 # Environment variables for production
 export ENV="production"
-export LOG_LEVEL="info"
+export LOG_LEVEL="warning"
 export FASTAPI_DEBUG="0"
+export DB_URL=$(aws secretsmanager get-secret-value \
+  --secret-id fastapi/prod/database \
+  --query SecretString \
+  --output text | jq -r .DATABASE_URL)
 
 # Check if everything is installed
 echo "✅ Checking if everything is installed correctly and synchronized..."
 
-uv sync
+# Ensures no dev dependency is installed
+uv sync --no-dev
 
 # Run FastAPI with uvicorn in production mode
 uvicorn src.main:app \

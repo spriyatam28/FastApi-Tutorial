@@ -15,7 +15,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10", "pytest-cov", "httpx", "pytest-asyncio"]
+dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10", "pytest-cov", "httpx", "pytest-asyncio", "python-dotenv"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

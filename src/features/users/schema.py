@@ -3,12 +3,14 @@ from pydantic import BaseModel, EmailStr, ConfigDict
 
 class UserBase(BaseModel):
 	"""Base user model with common fields"""
+
 	name: str
 	email: EmailStr
 
 
 class UserCreate(UserBase):
 	"""Model for creating new user"""
+
 	pass
 
 
