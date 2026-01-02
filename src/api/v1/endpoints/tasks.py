@@ -1,13 +1,12 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_db
+from src.api.v1.endpoints import DB_SESSION
 from src.features.tasks.repository import TaskRepository
 from src.features.tasks.schema import TaskResponse, TaskCreate, TaskUpdate
 from src.features.tasks.service import TaskService
 
 router = APIRouter()
-DB_SESSION = Depends(get_db)
 
 
 @router.get("/{user_id}", response_model=list[TaskResponse], status_code=status.HTTP_200_OK)

@@ -2,6 +2,9 @@
 
 set -e
 
+# Set the virtual environment to run the application
+deactivate && source .venv/bin/activate
+
 # Environment variables for production
 export ENV="production"
 export LOG_LEVEL="info"

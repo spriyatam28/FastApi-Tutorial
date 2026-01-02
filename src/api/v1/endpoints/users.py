@@ -1,13 +1,12 @@
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.database import get_db
+from src.api.v1.endpoints import DB_SESSION
 from src.features.users.repository import UserRepository
 from src.features.users.schema import UserResponse, UserCreate, UserUpdate
 from src.features.users.service import UserService
 
 router = APIRouter()
-DB_SESSION = Depends(get_db)
 
 
 @router.post("", response_model=UserResponse, status_code=status.HTTP_201_CREATED)

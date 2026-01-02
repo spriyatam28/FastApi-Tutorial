@@ -49,9 +49,7 @@ class TaskRepository:
 		if not db_user.scalar_one_or_none():
 			raise UserNotFoundException()
 
-		tasks = await self.db.execute(
-			select(Task).where(Task.user_id == user_id).limit(10).offset(0)
-		)
+		tasks = await self.db.execute(select(Task).where(Task.user_id == user_id).limit(10).offset(0))
 
 		return list(tasks.scalars().unique().all())
 
@@ -62,9 +60,7 @@ class TaskRepository:
 		:param task_id: task id
 		:return: Task details
 		"""
-		result = await self.db.execute(
-			select(Task).where(Task.user_id == user_id, Task.id == task_id)
-		)
+		result = await self.db.execute(select(Task).where(Task.user_id == user_id, Task.id == task_id))
 
 		task = result.scalar_one_or_none()
 
@@ -79,9 +75,7 @@ class TaskRepository:
 		:param task:
 		:return:
 		"""
-		result = await self.db.execute(
-			select(Task).where(Task.user_id == task.user_id, Task.id == task.id)
-		)
+		result = await self.db.execute(select(Task).where(Task.user_id == task.user_id, Task.id == task.id))
 
 		db_task = result.scalar_one_or_none()
 
@@ -101,9 +95,7 @@ class TaskRepository:
 			raise TaskNotFoundException() from err
 
 	async def delete(self, user_id: int, task_id: int) -> TaskResponse:
-		result = await self.db.execute(
-			delete(Task).where(Task.user_id == user_id, Task.id == task_id).returning(Task)
-		)
+		result = await self.db.execute(delete(Task).where(Task.user_id == user_id, Task.id == task_id).returning(Task))
 
 		deleted_task = result.scalar_one_or_none()
 

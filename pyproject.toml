@@ -11,15 +11,18 @@ dependencies = [
     "greenlet>=3.3.0",
     "pydantic[email]>=2.12.5",
     "sqlalchemy>=2.0.45",
-    "sqlalchemy-utils>=0.42.1",
     "uvicorn>=0.38.0",
 ]
 
 [dependency-groups]
-dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10"]
+dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10", "pytest-cov", "httpx", "pytest-asyncio"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 
 [tool.ruff]
-line-length = 100
+line-length = 150
 target-version = "py314"
 exclude = [
     ".venv",
@@ -36,7 +39,7 @@ lint.select = [
 ]
 
 lint.ignore = [
-    "E501", # Don't warn about line length (optional)
+    "E501", # Don't warn about line length
 ]
 
 [tool.ruff.format]

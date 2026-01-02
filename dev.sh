@@ -14,9 +14,10 @@ echo "✅ Starting ruff check on the current directory..."
 # Check the code for linting and formatting errors
 ruff check . && ruff format .
 
-echo "Click the link for API docs"
+# Link to access OpenAPI docs
+echo "Open the link for OpenAPI docs"
 echo http://127.0.0.1:8000/docs
 
-echo "🚀 Starting dev server..."
+echo "🚀 Starting development server..."
 
 uv run uvicorn src.main:app --reload --port 8000

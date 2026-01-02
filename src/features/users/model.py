@@ -11,9 +11,4 @@ class User(Base):
 	name = Column(String, nullable=False, default="User")
 	email = Column(String, nullable=False, unique=True, index=True)
 
-	tasks = relationship(
-		"Task",
-		back_populates="user",
-		cascade="all, delete-orphan",
-		passive_deletes=True
-	)
+	tasks = relationship("Task", back_populates="user", cascade="all, delete-orphan", passive_deletes=True)

@@ -1,28 +1,24 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserBase(BaseModel):
-	email: EmailStr
-
-
-class UserCreate(BaseModel):
+	"""Base user model with common fields"""
 	name: str
 	email: EmailStr
 
-	class Config:
-		from_attributes = True
+
+class UserCreate(UserBase):
+	"""Model for creating new user"""
+	pass
 
 
 class UserUpdate(BaseModel):
 	id: int
-	name: str
+	name: str | None = None
 	email: EmailStr | None = None
 
 
-class UserResponse(BaseModel):
-	id: int
-	name: str
-	email: EmailStr
+class UserResponse(UserBase):
+	model_config = ConfigDict(from_attributes=True)
 
-	class Config:
-		from_attributes = True
+	id: int

@@ -1,20 +1,24 @@
 from datetime import date
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class TaskCreate(BaseModel):
-	user_id: int
+class TaskBase(BaseModel):
+	"""Base task model with common fields"""
+	model_config = ConfigDict(from_attributes=True)
+
 	task_title: str
 	task_body: str | None = None
 	due_date: date
 	completed: bool = False
 
-	class Config:
-		from_attributes = True
+
+class TaskCreate(TaskBase):
+	"""Model for creating a new task"""
+	user_id: int
 
 
-class TaskUpdate(BaseModel):
+class TaskUpdate(TaskBase):
 	user_id: int
 	id: int
 	task_title: str
@@ -22,11 +26,8 @@ class TaskUpdate(BaseModel):
 	due_date: date
 	completed: bool = False
 
-	class Config:
-		from_attributes = True
 
-
-class TaskResponse(BaseModel):
+class TaskResponse(TaskBase):
 	user_id: int
 	id: int
 	task_title: str
@@ -35,6 +36,3 @@ class TaskResponse(BaseModel):
 	completed: bool
 	created_at: date
 	edited_at: date
-
-	class Config:
-		from_attributes = True

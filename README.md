@@ -15,7 +15,7 @@ This project is for learning about building backend system using FastAPI.
     - [x] Get a user by their `id`
     - [x] Get all users `limit=10` and `offset=0`
     - [x] Update user
-    - [x] Delete a `user`, ***corresponding*** `tasks` shall be *deleted* too
+    - [x] Delete a `user`, ***corresponding*** `tasks` will be *deleted*
 - ### Tasks
     - [x] Create a task
     - [x] Get all tasks of an `user`
@@ -28,11 +28,12 @@ This project is for learning about building backend system using FastAPI.
 
 ## Features:
 
+- [ ] When `user` or `task` is updated, check if anything is changed or only few `fields` is updated
 - [ ] Pagination
 - [ ] Unit testing - Pytest
 - [ ] Authentication and Authorization
 - [ ] Password Reset
-- [ ] Account Recovery(?)
+- [ ] Account Recovery
 - [ ] E2E testing
 - [ ] Process `requests` using multi-threading/multiprocessing
 - [ ] Caching using `Redis`
@@ -58,19 +59,19 @@ This project is for learning about building backend system using FastAPI.
 | GET    | `/api/v1/users`           | Get all users                 |
 | GET    | `/api/v1/users/{user_id}` | Get user by ID                |
 | POST   | `/api/v1/users`           | Create a new user             |
-| PATCH  | `/api/v1/users/{user_id}` | Update a user                 |
+| PATCH  | `/api/v1/users/{user_id}` | Update user                   |
 | DELETE | `/api/v1/users/{user_id}` | Delete user (and their tasks) |
 
 ### Tasks:
 
-| Method | Endpoint                            | Description                 |
-|--------|-------------------------------------|-----------------------------|
-| GET    | `/api/v1/tasks/{user_id}`           | Get tasks for a user        |
-| GET    | `/api/v1/tasks/{user_id}/{task_id}` | Get task by ID              |
-| POST   | `/api/v1/tasks`                     | Create new task             |
-| PATCH  | `/api/v1/tasks`                     | Update task                 |
-| DELETE | `/api/v1/tasks/{user_id}/{task_id}` | Delete task by ID           |
-| DELETE | `/api/v1/tasks/{user_id}`           | Delete all tasks for a user |
+| Method | Endpoint                            | Description                |
+|--------|-------------------------------------|----------------------------|
+| GET    | `/api/v1/tasks/{user_id}`           | Get tasks of a user        |
+| GET    | `/api/v1/tasks/{user_id}/{task_id}` | Get task by ID             |
+| POST   | `/api/v1/tasks`                     | Create new task            |
+| PATCH  | `/api/v1/tasks`                     | Update task                |
+| DELETE | `/api/v1/tasks/{user_id}/{task_id}` | Delete task by ID          |
+| DELETE | `/api/v1/tasks/{user_id}`           | Delete all tasks of a user |
 
 --- 
 
@@ -83,26 +84,24 @@ This project is for learning about building backend system using FastAPI.
    cd FastApi-Tutorial
    ```  
 
-3. If `uv` package manager is not
-   installed, [follow the instructions](https://docs.astral.sh/uv/getting-started/installation/)
-4. If `uv` is already installed:
+3. If `uv` is installed, if not [follow the instructions](https://docs.astral.sh/uv/getting-started/installation/):
    ```
    source .venv/bin/activate
    uv sync
     ```
-5. Make scripts executable:
+4. Make scripts executable:
    ```
    chmod +x dev.sh
    chmod +x prod.sh
    chmod +x tests.sh
    ```
-6. Run the development server:
+5. Run the development server:
    ```
    ./dev.sh
    ```
-7. Development server runs at: http://127.0.0.1:8000
-8. OpenAPI docs at: http://127.0.0.1:8000/docs
-9. To run the **production** server:
+6. Development server runs at: http://127.0.0.1:8000
+7. OpenAPI docs at: http://127.0.0.1:8000/docs
+8. To run the **production** server:
    ```
    ./prod.sh
    ```

@@ -9,6 +9,7 @@ from src.core.exceptions import AppException
 from src.database import Base, engine
 
 ENV = os.getenv("ENV", "development")
+API_PREFIX = "/api/v1"
 
 docs_url = None if ENV == "production" else "/docs"
 redoc_url = None if ENV == "production" else "/redoc"
@@ -33,16 +34,14 @@ app = FastAPI(
 	openapi_url=openapi_url,
 	description="Learning how to build backend systems using FastAPI",
 	version="0.1.0",
-	contact=None
-	if ENV == "production"
-	else {"name": "spriyatam28", "url": "https://github.com/spriyatam28/FastApi-Tutorial"},
+	contact=None if ENV == "production" else {"name": "spriyatam28", "url": "https://github.com/spriyatam28/FastApi-Tutorial"},
 	license_info={
 		"name": "GPL v3",
 		"url": "https://github.com/spriyatam28/FastApi-Tutorial/blob/main/LICENSE",
 	},
 )
 
-app.include_router(api_router, prefix="/api/v1")
+app.include_router(api_router, prefix=API_PREFIX)
 app.add_exception_handler(AppException, app_exception_handler)
 
 
