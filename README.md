@@ -8,7 +8,7 @@ This project is for learning about building backend system using FastAPI.
 
 ---
 
-## Models:
+## Features:
 
 - ### Users
     - [x] Create a user
@@ -26,21 +26,23 @@ This project is for learning about building backend system using FastAPI.
 
 ---
 
-## Features:
+## Todo:
 
 - [ ] When `user` or `task` is updated, check if anything is changed or only few `fields` is updated
 - [ ] Pagination
-- [ ] Unit testing - Pytest
+- [x] Test Coverage
+- [ ] Unit testing
+- [x] Integration testing 
+- [ ] E2E testing
 - [ ] Authentication and Authorization
+- [ ] Email verification
 - [ ] Password Reset
 - [ ] Account Recovery
-- [ ] E2E testing
 - [ ] Process `requests` using multi-threading/multiprocessing
 - [ ] Caching using `Redis`
 - [ ] Message Queue - `Kafka` or `RabbitMQ`
 - [ ] Background jobs. Maybe `Celery`
 - [ ] Scheduled Jobs
-- [ ] Email verification
 
 ---
 
