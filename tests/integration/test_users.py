@@ -8,140 +8,85 @@ USER_URL: str = f"{ROUTE_PREFIX}/users"
 
 
 @pytest.mark.asyncio
-async def test_get_all_users(test_client: AsyncClient):
-	payload = {"name": "Test User", "email": "test.user@example.com"}
-	create_res = await test_client.post(f"{USER_URL}", json=payload)
+async def test_get_all_users(test_client: AsyncClient, created_user):
+    response = await test_client.get(f"{USER_URL}")
 
-	assert create_res.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_200_OK
 
-	create_data = create_res.json()
+    users = response.json()
+    user = users[0]
 
-	response = await test_client.get(f"{USER_URL}")
-
-	assert response.status_code == status.HTTP_200_OK
-
-	users = response.json()
-	user = users[0]
-
-	assert "id" in user
-	assert user["id"] == create_data["id"]
-	assert user["name"] == payload["name"]
-	assert user["email"] == payload["email"]
+    assert "id" in user
+    assert user["id"] == created_user["id"]
+    assert user["name"] == created_user["name"]
+    assert user["email"] == created_user["email"]
 
 
 @pytest.mark.asyncio
-async def test_user_by_id(test_client: AsyncClient):
-	payload = {"name": "Test User", "email": "test.user1@example.com"}
-	create_res = await test_client.post(f"{USER_URL}", json=payload)
+async def test_user_by_id(test_client: AsyncClient, created_user):
+    response = await test_client.get(f"{USER_URL}/{created_user['id']}")
 
-	assert create_res.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_200_OK
 
-	created_user = create_res.json()
-	user_id = created_user["id"]
+    data = response.json()
 
-	response = await test_client.get(f"{USER_URL}/{user_id}")
-	assert response.status_code == status.HTTP_200_OK
-
-	data = response.json()
-
-	assert data["id"] == user_id
-	assert data["name"] == payload["name"]
-	assert data["email"] == payload["email"]
+    assert data == created_user
 
 
 @pytest.mark.asyncio
-async def test_create_user(test_client: AsyncClient):
-	user_payload = {"name": "Test User", "email": "test.user@example.com"}
+async def test_update_user(test_client: AsyncClient, created_user):
+    # Checking if both name and email is updated
+    update_payload1 = {"id": created_user['id'], "name": "Test User Both", "email": "test.user.both@example.com"}
 
-	response = await test_client.post(f"{USER_URL}", json=user_payload)
+    updated_response = await test_client.patch(f"{USER_URL}", json=update_payload1)
 
-	assert response.status_code == status.HTTP_201_CREATED
+    assert updated_response.status_code == status.HTTP_201_CREATED
 
-	data = response.json()
+    updated_data1 = updated_response.json()
 
-	assert data["name"] == user_payload["name"]
-	assert data["email"] == user_payload["email"]
-	assert "id" in data
+    assert "id" in updated_data1
+    assert updated_data1["id"] == created_user["id"]
+    assert updated_data1["email"] == update_payload1["email"]
+    assert updated_data1["name"] == update_payload1["name"]
 
+    # Checking if only name is updated
+    update_payload2 = {"id": created_user['id'], "name": "Test User Name"}
 
-@pytest.mark.asyncio
-async def test_update_user(test_client: AsyncClient):
-	user_payload = {"name": "Test User", "email": "test.user@example.com"}
+    updated_response = await test_client.patch(f"{USER_URL}", json=update_payload2)
 
-	created_response = await test_client.post(f"{USER_URL}", json=user_payload)
+    assert updated_response.status_code == status.HTTP_201_CREATED
 
-	assert created_response.status_code == status.HTTP_201_CREATED
+    updated_data2 = updated_response.json()
 
-	create_data = created_response.json()
+    assert "id" in updated_data2
+    assert updated_data2["id"] == created_user['id']
+    assert updated_data2["email"] == updated_data1["email"]
+    assert updated_data2["name"] == update_payload2["name"]
 
-	assert "id" in create_data
-	assert create_data["name"] == user_payload["name"]
-	assert create_data["email"] == user_payload["email"]
+    # Checking if only email is updated
+    update_payload3 = {"id": created_user['id'], "email": "test.user.email@example.com"}
 
-	# Checking if both name and email is updated
-	update_payload1 = {"id": create_data["id"], "name": "Test User Both", "email": "test.user.both@example.com"}
+    updated_response = await test_client.patch(f"{USER_URL}", json=update_payload3)
 
-	updated_response = await test_client.patch(f"{USER_URL}", json=update_payload1)
+    assert updated_response.status_code == status.HTTP_201_CREATED
 
-	assert updated_response.status_code == status.HTTP_201_CREATED
+    updated_data3 = updated_response.json()
 
-	updated_data1 = updated_response.json()
-
-	assert "id" in updated_data1
-	assert updated_data1["id"] == create_data["id"]
-	assert updated_data1["email"] == update_payload1["email"]
-	assert updated_data1["name"] == update_payload1["name"]
-
-	# Checking if only name is updated
-	update_payload2 = {"id": create_data["id"], "name": "Test User Name"}
-
-	updated_response = await test_client.patch(f"{USER_URL}", json=update_payload2)
-
-	assert updated_response.status_code == status.HTTP_201_CREATED
-
-	updated_data2 = updated_response.json()
-
-	assert "id" in updated_data2
-	assert updated_data2["id"] == create_data["id"]
-	assert updated_data2["email"] == updated_data1["email"]
-	assert updated_data2["name"] == update_payload2["name"]
-
-	# Checking if only email is updated
-	update_payload3 = {"id": create_data["id"], "email": "test.user.email@example.com"}
-
-	updated_response = await test_client.patch(f"{USER_URL}", json=update_payload3)
-
-	assert updated_response.status_code == status.HTTP_201_CREATED
-
-	updated_data3 = updated_response.json()
-
-	assert "id" in updated_data3
-	assert updated_data3["id"] == create_data["id"]
-	assert updated_data3["email"] == update_payload3["email"]
-	assert updated_data3["name"] == updated_data2["name"]
+    assert "id" in updated_data3
+    assert updated_data3["id"] == created_user['id']
+    assert updated_data3["email"] == update_payload3["email"]
+    assert updated_data3["name"] == updated_data2["name"]
 
 
 @pytest.mark.asyncio
-async def test_delete_user(test_client: AsyncClient):
-	user_payload = {"name": "Test User", "email": "test.user@example.com"}
+async def test_delete_user(test_client: AsyncClient, created_user):
+    deleted_response = await test_client.delete(f"{USER_URL}/{created_user['id']}")
 
-	created_response = await test_client.post(f"{USER_URL}", json=user_payload)
+    assert deleted_response.status_code == status.HTTP_200_OK
 
-	assert created_response.status_code == status.HTTP_201_CREATED
+    data = deleted_response.json()
 
-	create_data = created_response.json()
-
-	assert "id" in create_data
-	assert create_data["name"] == user_payload["name"]
-	assert create_data["email"] == user_payload["email"]
-
-	deleted_response = await test_client.delete(f"{USER_URL}/{create_data['id']}")
-
-	assert deleted_response.status_code == status.HTTP_200_OK
-
-	data = deleted_response.json()
-
-	assert "id" in data
-	assert data["id"] == create_data["id"]
-	assert data["name"] == create_data["name"]
-	assert data["email"] == create_data["email"]
+    assert "id" in data
+    assert data["id"] == created_user['id']
+    assert data["name"] == created_user["name"]
+    assert data["email"] == created_user["email"]

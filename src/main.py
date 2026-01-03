@@ -47,9 +47,4 @@ app.add_exception_handler(AppException, app_exception_handler)
 
 @app.get("/")
 async def root():
-	return {"msg": True}
-
-
-@app.get("/health")
-async def check_health():
-	return {"msg": "Working!!!"}
+	return {"msg": "Working"}

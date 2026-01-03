@@ -23,7 +23,8 @@ jobs:
             --exclude tests \
             --exclude README.md \
             --exclude .git \
-            src alembic alembic.ini pyproject.toml uv.lock scripts \
+            --exclude .env.example \
+            src alembic alembic.ini pyproject.toml uv.lock prod.sh \
             ec2-user@${{ secrets.EC2_IP }}:/app
 
       - name: Restart App

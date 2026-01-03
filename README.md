@@ -29,13 +29,14 @@ This project is for learning about building backend system using FastAPI.
 ## Todo:
 
 - [ ] When `user` or `task` is updated, check if anything is changed or only few `fields` is updated
-- [ ] Pagination
 - [x] Test Coverage
 - [ ] Unit testing
 - [x] Integration testing 
   - [x] Users
   - [ ] Tasks
 - [ ] E2E testing
+- [ ] Pagination
+- [ ] Logging
 - [ ] Authentication and Authorization
 - [ ] Email verification
 - [ ] Password Reset
@@ -99,7 +100,7 @@ This project is for learning about building backend system using FastAPI.
    chmod +x prod.sh
    chmod +x tests.sh
    ```
-5. Run the development server:
+5. Run the **development** server:
    ```
    ./dev.sh
    ```
