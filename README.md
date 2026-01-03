@@ -33,7 +33,7 @@ This project is for learning about building backend system using FastAPI.
 - [ ] Unit testing
 - [x] Integration testing 
   - [x] Users
-  - [ ] Tasks
+  - [x] Tasks
 - [ ] E2E testing
 - [ ] Pagination
 - [ ] Logging

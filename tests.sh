@@ -4,4 +4,4 @@ set -e
 
 echo "Running tests..."
 
-pytest --cov=src -q
+pytest --cov=src -q -s

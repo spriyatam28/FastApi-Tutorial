@@ -9,6 +9,7 @@ from src.main import app
 from tests import engine, ROUTE_PREFIX
 
 USER_URL = f"{ROUTE_PREFIX}/users"
+TASK_URL = f"{ROUTE_PREFIX}/tasks"
 
 TestSessionLocal = async_sessionmaker(
 	bind=engine,
@@ -102,3 +103,26 @@ async def created_user(test_client: AsyncClient):
 
 	# Delete the user after the test
 	await test_client.delete(f"{USER_URL}/{user['id']}")
+
+
+@pytest.fixture
+async def created_task(test_client: AsyncClient, created_user):
+	task_payload = {
+		"user_id": created_user["id"],
+		"task_title": "Create a task",
+		"task_body": "Task body 📝",
+		"completed": False,
+		"due_date": "2026-01-03",
+	}
+
+	response = await test_client.post(f"{TASK_URL}", json=task_payload)
+
+	assert response.status_code == status.HTTP_201_CREATED
+
+	data = response.json()
+
+	yield data
+
+	# Delete all the tasks of a user and the user after the test
+	await test_client.delete(f"{TASK_URL}/{created_user['id']}")
+	await test_client.delete(f"{USER_URL}/{created_user['id']}")
