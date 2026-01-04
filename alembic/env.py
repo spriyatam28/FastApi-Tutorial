@@ -2,17 +2,25 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from dotenv import load_dotenv
+
 from alembic import context
+from dotenv import load_dotenv
+from src.database import Base
 from src.features.users.model import User
 from src.features.tasks.model import Task
-from src.database import Base
 import os
 
+load_dotenv()
+
+db_user = os.getenv("DB_USER")
+db_password = os.getenv("DB_PASSWORD")
+db_name = os.getenv("DB_NAME")
+
+DB_URL = f"postgresql://{db_user}:{db_password}@localhost:5432/{db_name}"
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-load_dotenv()
+config.set_main_option("sqlalchemy.url", DB_URL)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -28,15 +36,7 @@ target_metadata = Base.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-db_user = os.getenv("DB_USER")
-db_password = os.getenv("DB_PASSWORD")
-db_name = os.getenv("DB_NAME")
 
-DB_URL = (
-    f"postgresql://{db_user}:{db_password}@localhost:5432/{db_name}"
-)
-
-config.set_main_option("sqlalchemy.url", DB_URL)
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -50,7 +50,7 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = config.get_main_option("sqlalchemy.url", DB_URL)
+    url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
         target_metadata=target_metadata,

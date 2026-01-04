@@ -89,5 +89,5 @@ async def test_delete_all_user_tasks(test_client: AsyncClient, created_task):
 
 	data = response.json()
 
-	# Checks if value is `True` or `False`
+	# Checks if `data["successful"]` is `True` otherwise `False`
 	assert data["successful"]
