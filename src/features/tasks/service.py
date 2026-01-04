@@ -1,5 +1,5 @@
+from starlette.responses import JSONResponse
 from src.features.tasks.repository import TaskRepository
-from src.features.tasks.model import Task
 from src.features.tasks.schema import TaskCreate, TaskResponse, TaskUpdate
 
 
@@ -7,7 +7,7 @@ class TaskService:
 	def __init__(self, repo: TaskRepository):
 		self.repo = repo
 
-	async def get_all_tasks(self, user_id: int) -> list[Task]:
+	async def get_all_tasks(self, user_id: int) -> list[TaskResponse]:
 		"""
 		Get all the tasks of a user
 		:param user_id:
@@ -53,7 +53,12 @@ class TaskService:
 
 		return deleted_task
 
-	async def delete_all_tasks(self, user_id: int) -> TaskResponse:
+	async def delete_all_tasks(self, user_id: int) -> JSONResponse:
 		deleted_tasks = await self.repo.delete_all(user_id)
 
 		return deleted_tasks
+
+	async def get_tasks_by_status(self, user_id: int, completed: bool) -> list[TaskResponse]:
+		tasks = await self.repo.tasks_by_status(user_id, completed)
+
+		return tasks

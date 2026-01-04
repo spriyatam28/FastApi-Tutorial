@@ -139,3 +139,15 @@ class TaskRepository:
 			await self.db.rollback()
 
 			return BaseResponse.response(False)
+
+	async def tasks_by_status(self, user_id: int, completed: bool) -> list[Task]:
+		result = await self.db.execute(select(User).where(User.id == user_id))
+
+		db_user = result.scalar_one_or_none()
+
+		if not db_user:
+			raise UserNotFoundException()
+
+		tasks = await self.db.execute(select(Task).where(Task.user_id == user_id, Task.completed == completed))
+
+		return list(tasks.scalars().all())

@@ -105,3 +105,20 @@ async def delete_tasks(user_id: int, db: AsyncSession = DB_SESSION):
 	deleted_tasks = await service.delete_all_tasks(user_id)
 
 	return deleted_tasks
+
+
+@router.get("/{user_id}/status/{completed}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+async def get_tasks_status_by_id(user_id: int, completed: bool, db: AsyncSession = DB_SESSION):
+	"""
+	Returns a list of tasks by its id and completion status
+	:param user_id: User id
+	:param completed: True or False
+	:param db: Database
+	:return: A list of tasks by its status
+	"""
+	repo = TaskRepository(db)
+	service = TaskService(repo)
+
+	tasks_list = await service.get_tasks_by_status(user_id, completed)
+
+	return tasks_list
