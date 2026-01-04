@@ -95,19 +95,28 @@ This project is for learning about building backend system using FastAPI.
    source .venv/bin/activate
    uv sync
     ```
-4. Make scripts executable:
+4. Set up environment variables by copying the example configuration:
+   ```
+   cp .env.example .ev
+   ```
+5. For migrations:
+   ```
+   alembic init alembic && alembic revision --autogenerate
+   alembic upgrade head 
+   ```
+6. Make scripts executable:
    ```
    chmod +x dev.sh
    chmod +x prod.sh
    chmod +x tests.sh
    ```
-5. Run the **development** server:
+7. Run the **development** server:
    ```
    ./dev.sh
    ```
-6. Development server runs at: http://127.0.0.1:8000
-7. OpenAPI docs at: http://127.0.0.1:8000/docs
-8. To run the **production** server:
+8. Development server runs at: http://127.0.0.1:8000
+9. OpenAPI docs at: http://127.0.0.1:8000/docs
+10. To run the **production** server:
    ```
    ./prod.sh
    ```
