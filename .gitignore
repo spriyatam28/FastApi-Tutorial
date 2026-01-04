@@ -11,3 +11,7 @@ wheels/
 .coverage
 .idea
 .env
+.vscode/
+.DS_Store
+*.log
+html_cov/
