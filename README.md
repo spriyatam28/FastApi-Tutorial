@@ -35,6 +35,7 @@ This project is for learning about building backend system using FastAPI.
   - [x] Users
   - [x] Tasks
 - [ ] E2E testing
+- [x] Migrations using Alembic
 - [ ] Pagination
 - [ ] Logging
 - [ ] Authentication and Authorization
