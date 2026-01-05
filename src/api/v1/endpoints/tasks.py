@@ -107,7 +107,7 @@ async def delete_tasks(user_id: int, db: AsyncSession = DB_SESSION):
 	return deleted_tasks
 
 
-@router.get("/{user_id}/status/{completed}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
+@router.get("/status/{user_id}/{completed}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 async def get_tasks_status_by_id(user_id: int, completed: bool, db: AsyncSession = DB_SESSION):
 	"""
 	Returns a list of tasks by its id and completion status

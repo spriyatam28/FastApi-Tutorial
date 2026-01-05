@@ -24,19 +24,19 @@ This project is for learning about building backend system using FastAPI.
     - [x] Delete a task by its `id`
     - [x] Delete all `tasks` of a user
     - [x] Get `tasks` by their status(completed or not)
-
+- ### Testing
+  - [x] Test coverage
+  - [x] Integration testing
+    - [x] Users
+    - [x] Tasks
+  - [x] Migrations using Alembic
 ---
 
 ## Todo:
 
 - [ ] When `user` or `task` is updated, check if anything is changed or only few `fields` is updated
-- [x] Test Coverage
 - [ ] Unit testing
-- [x] Integration testing 
-  - [x] Users
-  - [x] Tasks
 - [ ] E2E testing
-- [x] Migrations using Alembic
 - [ ] Pagination
 - [ ] Logging
 - [ ] Authentication and Authorization
@@ -54,6 +54,11 @@ This project is for learning about building backend system using FastAPI.
 ## Package Manager:
 
 - uv
+- To view dependency tree:
+
+    ```
+    uv tree
+    ```
 
 ---
 
@@ -71,14 +76,15 @@ This project is for learning about building backend system using FastAPI.
 
 ### Tasks:
 
-| Method | Endpoint                            | Description                |
-|--------|-------------------------------------|----------------------------|
-| GET    | `/api/v1/tasks/{user_id}`           | Get tasks of a user        |
-| GET    | `/api/v1/tasks/{user_id}/{task_id}` | Get task by ID             |
-| POST   | `/api/v1/tasks`                     | Create new task            |
-| PATCH  | `/api/v1/tasks`                     | Update task                |
-| DELETE | `/api/v1/tasks/{user_id}/{task_id}` | Delete task by ID          |
-| DELETE | `/api/v1/tasks/{user_id}`           | Delete all tasks of a user |
+| Method | Endpoint                              | Description                             |
+|--------|---------------------------------------|-----------------------------------------|
+| GET    | `/api/v1/tasks/{user_id}`             | Get tasks of a user                     |
+| GET    | `/api/v1/tasks/{user_id}/{task_id}`   | Get task by ID                          |
+| POST   | `/api/v1/tasks`                       | Create new task                         |
+| PATCH  | `/api/v1/tasks`                       | Update task                             |
+| DELETE | `/api/v1/tasks/{user_id}/{task_id}`   | Delete task by ID                       |
+| DELETE | `/api/v1/tasks/{user_id}`             | Delete all tasks of a user              |
+| GET    | `api/v1/status/{user_id}/{completed}` | Get all thsks of a user by their status |
 
 --- 
 
@@ -91,7 +97,9 @@ This project is for learning about building backend system using FastAPI.
    cd FastApi-Tutorial
    ```  
 
-3. If `uv` is installed, if not [follow the instructions](https://docs.astral.sh/uv/getting-started/installation/):
+3. If `uv` is installed, if not <a href="https://docs.astral.sh/uv/getting-started/installation/" target="_blank" rel="noopener noreferrer">
+   follow the instructions
+   </a>:
    ```
    source .venv/bin/activate
    uv sync
