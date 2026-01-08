@@ -12,3 +12,9 @@ class AppException(Exception):
 
 	def __str__(self):
 		return self.message
+
+
+class RepositoryException(AppException):
+	"""Base exception for repository operations"""
+
+	pass

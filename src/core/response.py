@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
 from fastapi import status
@@ -7,11 +9,9 @@ class BaseResponse(BaseModel):
 	result: str
 
 	@staticmethod
-	def response(result: bool) -> JSONResponse:
+	def response(result: bool, status_code: Optional[int], detail: Optional[str]) -> JSONResponse:
 		"""Returns a base JSONResponse using the model"""
 		return JSONResponse(
 			status_code=status.HTTP_200_OK,
-			content={
-				"successful": result,
-			},
+			content={"successful": result, "status_code": status_code, "detail": detail},
 		)

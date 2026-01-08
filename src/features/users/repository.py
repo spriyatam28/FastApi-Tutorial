@@ -2,30 +2,24 @@ from typing import Optional
 
 from pydantic import EmailStr
 from sqlalchemy import select, delete
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .exception import UserNotFoundException, EmailNotFoundException, DuplicateEmailException
 from .model import User
-from .schema import UserCreate, UserUpdate
+from .schema import UserUpdate, UserBase
+from ...core.exceptions import RepositoryException
 
 
 class UserRepository:
 	def __init__(self, db: AsyncSession):
 		self.db = db
 
-	async def create(self, user: UserCreate) -> User:
+	async def create(self, user: UserBase) -> User:
 		"""
 		Creates a new user, if email doesn't exist
 		:param user: Takes the user details
 		:return: New user details
 		"""
-		result = await self.db.execute(select(User).where(User.email == user.email))
-
-		# If email already exists in db, throw an exception
-		if result.scalar_one_or_none():
-			raise DuplicateEmailException()
-
 		new_user = User(**user.model_dump())
 
 		try:
@@ -36,7 +30,10 @@ class UserRepository:
 			return new_user
 		except IntegrityError as err:
 			await self.db.rollback()
-			raise DuplicateEmailException() from err
+			raise RepositoryException(str(err)) from err
+		except SQLAlchemyError as err:
+			await self.db.rollback()
+			raise RepositoryException(str(err)) from err
 
 	async def update(self, user: UserUpdate) -> Optional[User]:
 		"""
@@ -45,17 +42,6 @@ class UserRepository:
 		:return: Returns user details after successfully updating them
 		"""
 		db_user = await self.get_user_by_id(user.id)
-
-		if not db_user:
-			raise UserNotFoundException()
-
-		# Check if the new email already exists in db
-		if user.email and user.email != db_user.email:
-			result = await self.db.execute(select(User).where(User.email == user.email))
-			existing_email = result.scalar_one_or_none()
-
-			if existing_email:
-				raise DuplicateEmailException()
 
 		# If email does not exist, apply the update
 		for field, value in user.model_dump(exclude_unset=True).items():
@@ -68,9 +54,12 @@ class UserRepository:
 			return db_user
 		except IntegrityError as err:
 			await self.db.rollback()
-			raise DuplicateEmailException() from err
+			raise RepositoryException(str(err)) from err
+		except SQLAlchemyError as err:
+			await self.db.rollback()
+			raise RepositoryException(str(err)) from err
 
-	async def get_user_by_email(self, email: EmailStr) -> User | None:
+	async def get_user_by_email(self, email: EmailStr) -> Optional[User]:
 		"""
 		Gets user details by their email if exists
 		:param email: email of the user
@@ -79,12 +68,9 @@ class UserRepository:
 		result = await self.db.execute(select(User).where(User.email == email))
 		user = result.scalar_one_or_none()
 
-		if not user:
-			raise EmailNotFoundException()
-
 		return user
 
-	async def get_user_by_id(self, user_id: int) -> User | None:
+	async def get_user_by_id(self, user_id: int) -> Optional[User]:
 		"""
 		Gets a user details if exists
 		:param user_id: user id
@@ -92,9 +78,6 @@ class UserRepository:
 		"""
 		result = await self.db.execute(select(User).where(User.id == user_id))
 		user = result.scalar_one_or_none()
-
-		if not user:
-			raise UserNotFoundException()
 
 		return user
 
@@ -107,18 +90,14 @@ class UserRepository:
 
 		return list(users.scalars().all())
 
-	async def delete(self, user_id: int) -> User | None:
+	async def delete(self, user_id: int) -> Optional[User]:
 		"""
 		Delete a user by their id
 		:param user_id:
 		:return:
 		"""
-		# TODO: Use Alembic for migration
 		result = await self.db.execute(delete(User).where(User.id == user_id).returning(User))
 		user = result.scalar_one_or_none()
-
-		if not user:
-			raise UserNotFoundException()
 
 		try:
 			await self.db.commit()
@@ -126,4 +105,7 @@ class UserRepository:
 			return user
 		except IntegrityError as err:
 			await self.db.rollback()
-			raise UserNotFoundException() from err
+			raise RepositoryException(str(err)) from err
+		except SQLAlchemyError as err:
+			await self.db.rollback()
+			raise RepositoryException(str(err)) from err

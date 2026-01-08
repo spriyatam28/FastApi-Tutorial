@@ -34,6 +34,7 @@ This project is for learning about building backend system using FastAPI.
 
 ## Todo:
 
+- [ ] Handle wrong `request` like `422` etc
 - [ ] When `user` or `task` is updated, check if anything is changed or only few `fields` is updated
 - [ ] Unit testing
 - [ ] E2E testing
