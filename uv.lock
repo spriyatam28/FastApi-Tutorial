@@ -232,6 +232,7 @@ dependencies = [
     { name = "greenlet" },
     { name = "psycopg2-binary" },
     { name = "pydantic", extra = ["email"] },
+    { name = "python-dotenv" },
     { name = "sqlalchemy" },
     { name = "uvicorn" },
 ]
@@ -243,7 +244,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
-    { name = "python-dotenv" },
     { name = "ruff" },
 ]
 
@@ -255,6 +255,7 @@ requires-dist = [
     { name = "greenlet", specifier = ">=3.3.0" },
     { name = "psycopg2-binary" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.12.5" },
+    { name = "python-dotenv" },
     { name = "sqlalchemy", specifier = ">=2.0.45" },
     { name = "uvicorn", specifier = ">=0.38.0" },
 ]
@@ -266,7 +267,6 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
-    { name = "python-dotenv" },
     { name = "ruff", specifier = ">=0.14.10" },
 ]
 

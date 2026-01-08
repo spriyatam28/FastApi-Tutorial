@@ -12,11 +12,12 @@ dependencies = [
     "pydantic[email]>=2.12.5",
     "sqlalchemy>=2.0.45",
     "uvicorn>=0.38.0",
-    "psycopg2-binary"
+    "psycopg2-binary",
+    "python-dotenv"
 ]
 
 [dependency-groups]
-dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10", "pytest-cov", "httpx", "pytest-asyncio", "python-dotenv"]
+dev = ["fastapi[standard]", "pytest", "ruff>=0.14.10", "pytest-cov", "httpx", "pytest-asyncio"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

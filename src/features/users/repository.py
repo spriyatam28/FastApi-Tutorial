@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import EmailStr
 from sqlalchemy import select, delete
 from sqlalchemy.exc import IntegrityError
@@ -36,7 +38,7 @@ class UserRepository:
 			await self.db.rollback()
 			raise DuplicateEmailException() from err
 
-	async def update(self, user: UserUpdate) -> User | None:
+	async def update(self, user: UserUpdate) -> Optional[User]:
 		"""
 		Updates user email and/or name, identifies user by their id
 		:param user: User details that need to be updated
